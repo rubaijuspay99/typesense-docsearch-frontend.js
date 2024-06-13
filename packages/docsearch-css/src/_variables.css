@@ -1,14 +1,14 @@
 /* Variables */
 
 :root {
-  --docsearch-primary-color: rgb(16, 53, 188);
-  --docsearch-text-color: rgb(28, 30, 33);
+  --docsearch-primary-color: #0099FFFF;
+  --docsearch-text-color: #333333;
   --docsearch-spacing: 12px;
   --docsearch-icon-stroke-width: 1.4;
   --docsearch-highlight-color: var(--docsearch-primary-color);
-  --docsearch-muted-color: rgb(150, 159, 175);
+  --docsearch-muted-color: r#666666;
   --docsearch-container-background: rgba(101, 108, 133, 0.8);
-  --docsearch-logo-color: rgba(16, 53, 188);
+  --docsearch-logo-color: #0099FFFF;
 
   /* modal */
   --docsearch-modal-width: 560px;
@@ -19,9 +19,10 @@
 
   /* searchbox */
   --docsearch-searchbox-height: 56px;
-  --docsearch-searchbox-background: rgb(235, 237, 240);
+  --docsearch-searchbox-background: #f5f5f5;
   --docsearch-searchbox-focus-background: #fff;
   --docsearch-searchbox-shadow: inset 0 0 0 2px var(--docsearch-primary-color);
+  --docsearch-searchbox-border: 1px solid #dbdbdb;
 
   /* hit */
   --docsearch-hit-height: 56px;
@@ -49,13 +50,14 @@
 /* Darkmode */
 
 html[data-theme='dark'] {
-  --docsearch-text-color: rgb(245, 246, 247);
+  --docsearch-text-color: #EBEBEB;
   --docsearch-container-background: rgba(9, 10, 17, 0.8);
   --docsearch-modal-background: rgb(21, 23, 42);
   --docsearch-modal-shadow: inset 1px 1px 0 0 rgb(44, 46, 64),
     0 3px 8px 0 rgb(0, 3, 9);
-  --docsearch-searchbox-background: rgb(9, 10, 17);
+  --docsearch-searchbox-background: #333333;
   --docsearch-searchbox-focus-background: #000;
+  --docsearch-searchbox-border: 1px solid #525050;
   --docsearch-hit-color: rgb(190, 195, 201);
   --docsearch-hit-shadow: none;
   --docsearch-hit-background: rgb(9, 10, 17);
