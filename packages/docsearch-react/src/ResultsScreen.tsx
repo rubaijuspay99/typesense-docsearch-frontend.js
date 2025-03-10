@@ -61,7 +61,7 @@ export function ResultsScreen(props: ResultsScreenProps) {
           />
         );
       })}
-
+      
       {props.resultsFooterComponent && (
         <section className="DocSearch-HitsFooter">
           <props.resultsFooterComponent state={props.state} />

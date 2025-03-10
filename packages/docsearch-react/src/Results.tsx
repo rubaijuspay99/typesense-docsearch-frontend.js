@@ -28,26 +28,114 @@ interface ResultsProps<TItem extends BaseItem>
   hitComponent: DocSearchProps['hitComponent'];
 }
 
+export const breadcrumbNameMapper = {
+  android: 'Android',
+  ios: 'iOS',
+  web: 'Web',
+  react: 'React',
+  angular: 'Angular',
+  vue: 'Vue',
+  svelte: 'Svelte',
+  flutter: 'Flutter',
+  'react-native': 'React Native',
+  cordova: 'Cordova',
+  capacitor: 'Capacitor',
+  'hyper-checkout': 'HyperCheckout',
+  'hypercheckout-global': 'HyperCheckout',
+  dotp: 'Native OTP',
+  'api-reference': 'API Reference',
+  resources: 'Resources',
+  faq: 'FAQ',
+  faqs: 'FAQs',
+  'ec-headless': 'ExpressCheckout Headless',
+  payout: 'Juspay Payout',
+  'payment-links': 'Payment Links',
+  'ec-api': 'ExpressCheckout API',
+  'upi-plugin-sdk': 'HyperUPI',
+  'upi-tpap-sdk': 'UPI TPAP SDK',
+  jusbiz: 'JusBiz',
+  'express-checkout-sdk-brazil': 'ExpressCheckout SDK',
+  'api-reference-brazil': 'API Reference',
+  payv3: 'PayV3',
+  'hyper-credit': 'HyperCredit',
+  'express-checkout-sdk-global': 'ExpressCheckout SDK',
+  'ec-api-global': 'ExpressCheckout API',
+  'payout-sea': 'Payout',
+  'payout-brazil': 'Payout',
+  'resources-global': 'Resources',
+};
+
+export function getBreadcrumbName(path: string) {
+  if (breadcrumbNameMapper[path]) return breadcrumbNameMapper[path];
+  const formattedStr = path
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+    .join(' ');
+  return formattedStr;
+}
+
+export function splitTitle(title?: string) {
+  let splitArray = title;
+  if (title) {
+    splitArray = title.split('___')[0];
+  }
+  return splitArray;
+}
+
 export function Results<TItem extends StoredDocSearchHit>(
   props: ResultsProps<TItem>
 ) {
   if (!props.collection || props.collection.items.length === 0) {
     return null;
   }
+  let sourceLink = '';
+  let sourceLinkPaths: string[] = [];
+  if (props?.collection?.items?.length > 0) {
+    sourceLink = props.collection.items[0].url;
+    const pathArray = new URL(sourceLink).pathname.split('/').filter(Boolean);
+    sourceLinkPaths = pathArray.slice(-4);
+  }
 
   return (
     <section className="DocSearch-Hits">
-      <div className="DocSearch-Hit-source">{props.title}</div>
+      <div className="Hit-Header">
+        <div className="DocSearch-Hit-source">{splitTitle(props.title)}</div>
+
+        {sourceLink &&
+        sourceLinkPaths.length == 4 &&
+        props.title != 'Recent' ? (
+          <div className="DocSearch-breadcrumb-source ">{`${getBreadcrumbName(
+            sourceLinkPaths[0]
+          )} > ${getBreadcrumbName(sourceLinkPaths[1])}`}</div>
+        ) : (
+          ``
+        )}
+      </div>
 
       <ul {...props.getListProps()}>
+        {props.collection.items.every((item) => item.type === 'lvl0') ? (
+          <Result
+            key={[
+              splitTitle(props.title),
+              props.collection.items[0].objectID,
+            ].join(':')}
+            item={props.collection.items[0]}
+            index={0}
+            {...props}
+          />
+        ) : (
+          ``
+        )}
         {props.collection.items.map((item, index) => {
           return (
-            <Result
-              key={[props.title, item.objectID].join(':')}
-              item={item}
-              index={index}
-              {...props}
-            />
+            item.type !== 'lvl0' && (
+              <Result
+                key={[props.title, item.objectID].join(':')}
+                item={item}
+                index={index}
+                {...props}
+              />
+            )
           );
         })}
       </ul>
@@ -115,11 +203,14 @@ function Result<TItem extends StoredDocSearchHit>({
 
           {item[`hierarchy.${item.type}`] && item.type === 'lvl0' && (
             <div className="DocSearch-Hit-content-wrapper">
-              <Snippet
+              {/* <Snippet
                 className="DocSearch-Hit-title"
                 hit={item}
                 attribute="hierarchy.lvl0"
-              />
+              /> */}
+              <span className="DocSearch-Hit-title">
+                {splitTitle(item[`hierarchy.lvl0`])}
+              </span>
             </div>
           )}
 

@@ -3,6 +3,7 @@ import React from 'react';
 import { NoResultsIcon } from './icons';
 import type { ScreenStateProps } from './ScreenState';
 import type { InternalDocSearchHit } from './types';
+import { splitTitle } from './Results';
 
 export type NoResultsScreenTranslations = Partial<{
   noResultsText: string;
@@ -53,12 +54,12 @@ export function NoResultsScreen({
                     key={search}
                     type="button"
                     onClick={() => {
-                      props.setQuery(search.toLowerCase() + ' ');
+                      props.setQuery(splitTitle(search)?.toLowerCase() + ' ');
                       props.refresh();
                       props.inputRef.current!.focus();
                     }}
                   >
-                    {search}
+                    {splitTitle(search)}
                   </button>
                 </li>,
               ],
