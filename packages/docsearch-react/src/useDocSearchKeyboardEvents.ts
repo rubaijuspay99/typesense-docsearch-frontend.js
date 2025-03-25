@@ -20,6 +20,16 @@ function isEditingContent(event: KeyboardEvent): boolean {
   );
 }
 
+// Function to close all existing modals
+function closeAllExistingModals() {
+  // Remove active class from body
+  document.body.classList.remove('DocSearch--active');
+
+  // Remove all existing modals
+  const existingModals = document.querySelectorAll('.DocSearch-Container');
+  existingModals.forEach((modal) => modal.remove());
+}
+
 export function useDocSearchKeyboardEvents({
   isOpen,
   onOpen,
@@ -30,29 +40,40 @@ export function useDocSearchKeyboardEvents({
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       function open() {
-        // We check that no other DocSearch modal is showing before opening
-        // another one.
-        if (!document.body.classList.contains('DocSearch--active')) {
-          onOpen();
-        }
+        // First close all existing modals
+        closeAllExistingModals();
+        // Then open the new modal
+        onOpen();
       }
+
+      // Handle closing
       if (
-        (event.keyCode === 27 && isOpen) ||
-        // The `Cmd+K` shortcut both opens and closes the modal.
-        (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) ||
-        // The `/` shortcut opens but doesn't close the modal because it's
-        // a character.
-        (!isEditingContent(event) && event.key === '/' && !isOpen)
+        isOpen &&
+        (event.keyCode === 27 ||
+          (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)))
       ) {
         event.preventDefault();
+        closeAllExistingModals();
+        onClose();
+        return;
+      }
 
-        if (isOpen) {
-          onClose();
-        } else if (!document.body.classList.contains('DocSearch--active')) {
+      // Handle opening
+      if (!isOpen) {
+        if (
+          event.key.toLowerCase() === 'k' &&
+          (event.metaKey || event.ctrlKey)
+        ) {
+          event.preventDefault();
           open();
+        }
+        else if (!isEditingContent(event) && event.key === '/') {
+          event.preventDefault();
+          // open();
         }
       }
 
+      // Handle input when search button is focused
       if (
         searchButtonRef &&
         searchButtonRef.current === document.activeElement &&

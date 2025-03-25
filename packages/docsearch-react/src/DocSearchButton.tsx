@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { SearchIcon } from './icons/SearchIcon';
+import { ControlKeyIcon } from './icons/ControlKeyIcon';
 
 export type ButtonTranslations = Partial<{
   buttonText: string;
@@ -51,7 +52,10 @@ export const DocSearchButton = React.forwardRef<
         {key !== null && (
           <>
             
-            <kbd className="DocSearch-Button-Key">/</kbd>
+            <kbd className="DocSearch-Button-Key">
+              {key === ACTION_KEY_DEFAULT ? <ControlKeyIcon /> : key}
+            </kbd>
+            <kbd className="DocSearch-Button-Key">K</kbd>
           </>
         )}
       </span>

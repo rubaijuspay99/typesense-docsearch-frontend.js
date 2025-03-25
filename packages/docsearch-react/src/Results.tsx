@@ -47,31 +47,44 @@ export const breadcrumbNameMapper = {
   resources: 'Resources',
   faq: 'FAQ',
   faqs: 'FAQs',
-  'ec-headless': 'ExpressCheckout Headless',
+  'ec-headless': 'Express Checkout SDK',
   payout: 'Juspay Payout',
   'payment-links': 'Payment Links',
   'ec-api': 'ExpressCheckout API',
   'upi-plugin-sdk': 'HyperUPI',
   'upi-tpap-sdk': 'UPI TPAP SDK',
   jusbiz: 'JusBiz',
-  'express-checkout-sdk-brazil': 'ExpressCheckout SDK',
+  'express-checkout-sdk-brazil': 'Express Checkout SDK',
   'api-reference-brazil': 'API Reference',
   payv3: 'PayV3',
   'hyper-credit': 'HyperCredit',
-  'express-checkout-sdk-global': 'ExpressCheckout SDK',
+  'express-checkout-sdk-global': 'Express Checkout SDK',
   'ec-api-global': 'ExpressCheckout API',
   'payout-sea': 'Payout',
   'payout-brazil': 'Payout',
   'resources-global': 'Resources',
+  'pix-payment-flows-br': 'Pix Payment Flows',
+  'offer-engine-sea': 'Offer Engine',
+  'hyper-checkout-sea': 'HyperCheckout',
 };
 
-export function getBreadcrumbName(path: string) {
+export function getBreadcrumbName(path: string): string {
   if (breadcrumbNameMapper[path]) return breadcrumbNameMapper[path];
-  const formattedStr = path
+
+  const cleanPath = path.replace(/^\/|\/$/g, '');
+  const decodedPath = decodeHTMLEntities(cleanPath);
+
+  return decodedPath
     .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
-  return formattedStr;
+}
+
+function decodeHTMLEntities(text?: string): string {
+  if (!text) return '';
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
 }
 
 export function splitTitle(title?: string) {
@@ -99,7 +112,9 @@ export function Results<TItem extends StoredDocSearchHit>(
   return (
     <section className="DocSearch-Hits">
       <div className="Hit-Header">
-        <div className="DocSearch-Hit-source">{splitTitle(props.title)}</div>
+        <div className="DocSearch-Hit-source">
+          {decodeHTMLEntities(splitTitle(props.title))}
+        </div>
 
         {sourceLink &&
         sourceLinkPaths.length == 4 &&
@@ -116,7 +131,7 @@ export function Results<TItem extends StoredDocSearchHit>(
         {props.collection.items.every((item) => item.type === 'lvl0') ? (
           <Result
             key={[
-              splitTitle(props.title),
+              decodeHTMLEntities(splitTitle(props.title)),
               props.collection.items[0].objectID,
             ].join(':')}
             item={props.collection.items[0]}
@@ -209,7 +224,7 @@ function Result<TItem extends StoredDocSearchHit>({
                 attribute="hierarchy.lvl0"
               /> */}
               <span className="DocSearch-Hit-title">
-                {splitTitle(item[`hierarchy.lvl0`])}
+                {decodeHTMLEntities(splitTitle(item[`hierarchy.lvl0`]))}
               </span>
             </div>
           )}
